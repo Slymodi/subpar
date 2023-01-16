@@ -13,9 +13,14 @@ public class TouchInput: Singleton<TouchInput>
     public bool pointerUp;
     public bool pointerHeld;
 
+    public bool secondPointerDown;
+    public bool secondPointerUp;
+    public bool secondPointerHeld;
+
     void Update()
     {
         bool lastPointerHeld = pointerHeld;
+        bool lastSecondPointerHeld = secondPointerHeld;
         pointerHeld = false;
 
         if (Input.touchCount > 0)
@@ -28,10 +33,20 @@ public class TouchInput: Singleton<TouchInput>
             pointerPosition = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height);
             pointerHeld = true;
         }
+        if (Input.GetMouseButton(1)) {
+            secondPointerHeld = true;
+        }
+
+        
 
         pointerDown = !lastPointerHeld && pointerHeld;
         pointerUp = lastPointerHeld && !pointerHeld;
 
+        secondPointerDown = !lastSecondPointerHeld && secondPointerHeld;
+        secondPointerUp = lastSecondPointerHeld && !secondPointerHeld;
+
+
         if (pointerDown) pointerStartPosition = pointerPosition;
+        
     }
 }

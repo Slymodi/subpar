@@ -16,13 +16,22 @@ public class Ball : MonoBehaviour
     [SerializeField] float aimSpeed = 0.5f;
     [Header("Shoot Settings")]
     [SerializeField] GameStateController gameStateController;
-    [SerializeField] float powerMultiplier = 1f;
+    [SerializeField] public float powerMultiplier = 500f;
     [SerializeField] Collider inputRaycastPlane;
     [SerializeField] float minAimDistance = 0.05f;
     [SerializeField] float powerSensitivity = 1f;
+    [SerializeField] Projection projection;
+    [SerializeField] Ball ballPrefab;
 
     bool pointerMovedEnough = false;
     Vector3 lastEndTouch = Vector3.zero;
+
+    public enum ShootState
+    {
+        PUTT,DRIVE,POP
+    }
+
+    public ShootState shootState;
 
     Rigidbody ThisRigidBody
     {
@@ -35,13 +44,15 @@ public class Ball : MonoBehaviour
     Rigidbody thisRigidBody;
 
     private bool showingSteering = true;
-    private float steeringAngle = 0;    // relative to -z
-    private float power = 0;    // between 0 and 1
+    public float steeringAngle = 0;    // relative to -z
+    public float power = 0;    // between 0 and 1
+    public bool isGhost = false;
     bool moveable = true;
 
     void Start()
     {
         ShowSteering(false);
+        shootState = ShootState.DRIVE;
     }
 
     void Update()
@@ -52,6 +63,8 @@ public class Ball : MonoBehaviour
         if (!moveable) ring.transform.localEulerAngles += Vector3.up * ringSpinSpeed * Time.deltaTime;
 
         bool aiming = false;
+
+        if (TouchInput.Instance.secondPointerDown) ChangeShootState();
 
         if (TouchInput.Instance.pointerHeld && gameStateController.State == GameStateController.GameState.aiming)
         {
@@ -65,6 +78,8 @@ public class Ball : MonoBehaviour
             }
             else
             {
+                projection.SimulateTrajectory(ballPrefab,transform.position, steeringAngle, shootState,power);
+
                 bool justStarted = !aiming;
                 aiming = true;
 
@@ -91,8 +106,7 @@ public class Ball : MonoBehaviour
                     aimLineLength / 10f
                 );
 
-                aimingLine.transform.localPosition = (endTouch - startTouch) * 0.5f / powerSensitivity + startTouch;
-                aimingLine.localEulerAngles = Vector3.up * aimAngle;
+
             }
         }
         else
@@ -117,6 +131,8 @@ public class Ball : MonoBehaviour
 
     private void UpdateSteeringArrows(bool instant = false)
     {
+
+
         float scale = Mathf.Lerp(minSteeringPlaneScale, maxSteeringPlaneScale, power);
         float rotation = steeringAngle;
 
@@ -175,6 +191,22 @@ public class Ball : MonoBehaviour
     // Mechanics 
     // ============================================================================================
 
+    private void ChangeShootState()
+    {
+        switch(shootState)
+        {
+            case ShootState.PUTT:
+                shootState = ShootState.DRIVE;
+                break;
+            case ShootState.DRIVE:
+                shootState = ShootState.POP;
+                break;
+            case ShootState.POP:
+                shootState = ShootState.PUTT;
+                break;
+        }
+    }
+
     public void SetSteering(float angle)
     {
         steeringAngle = angle;
@@ -187,7 +219,19 @@ public class Ball : MonoBehaviour
 
     private Vector3 GetShootDirection()
     {
-        return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up) * Vector3.right;
+        //quaternion angle axis where the angle is multiplied by right and up vector
+
+        switch(shootState)
+        {
+            case ShootState.PUTT:
+                return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up) * new Vector3(0.5f, 0, 0);
+            case ShootState.DRIVE:
+                return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up) * new Vector3(1, 0, 0);
+            case ShootState.POP:
+                return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up) * new Vector3(1, 1, 0);
+        }
+        return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up) * new Vector3(1, 1, 0);
+        //return Quaternion.AngleAxis(steeringAngle + 90, Vector3.up);
     }
 
     public void SetMoveable(bool moveable)

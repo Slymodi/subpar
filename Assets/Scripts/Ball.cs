@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Ball : MonoBehaviour
 {
     [Header("Visual Settings")]
@@ -15,13 +15,37 @@ public class Ball : MonoBehaviour
     [SerializeField] float arrowCenterOffset = 1f;
     [SerializeField] float aimSpeed = 0.5f;
     [Header("Shoot Settings")]
-    [SerializeField] GameStateController gameStateController;
     [SerializeField] public float powerMultiplier = 500f;
-    [SerializeField] Collider inputRaycastPlane;
+
+    [SerializeField] GameStateController gameStateController
+    {
+        get
+        {
+            if (_gameStateController == null) _gameStateController = FindObjectOfType<GameStateController>();
+            return _gameStateController;
+        }
+    }
+    private GameStateController _gameStateController;
+    [SerializeField] Collider inputRaycastPlane
+    {
+        get
+        {
+            if (_inputRaycastPlane == null) _inputRaycastPlane = Resources.FindObjectsOfTypeAll<Collider>().Where(obj => obj.name == "InputRaycastPlane").FirstOrDefault();
+            return _inputRaycastPlane;
+        }
+    }
+    private Collider _inputRaycastPlane;
     [SerializeField] float minAimDistance = 0.05f;
     [SerializeField] float powerSensitivity = 1f;
-    [SerializeField] Projection projection;
-    [SerializeField] Ball ballPrefab;
+    [SerializeField] Projection projection 
+    {
+        get
+        {
+            if (_projection == null) _projection = FindObjectOfType<Projection>();
+            return _projection;
+        }
+    }
+    private Projection _projection;
 
     bool pointerMovedEnough = false;
     Vector3 lastEndTouch = Vector3.zero;
@@ -57,17 +81,22 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
+
+
         UpdateSteeringArrows();
+        if(isGhost) return;
+        projection.SimulateTrajectory(transform.position, steeringAngle,1);
 
         ring.gameObject.SetActive(!moveable);
         if (!moveable) ring.transform.localEulerAngles += Vector3.up * ringSpinSpeed * Time.deltaTime;
-
+        
         bool aiming = false;
 
         if (TouchInput.Instance.secondPointerDown) ChangeShootState();
 
         if (TouchInput.Instance.pointerHeld && gameStateController.State == GameStateController.GameState.aiming)
         {
+
             if (!pointerMovedEnough)
             {
                 float touchChange = (TouchInput.Instance.pointerStartPosition - TouchInput.Instance.pointerPosition).magnitude;
@@ -78,7 +107,6 @@ public class Ball : MonoBehaviour
             }
             else
             {
-                projection.SimulateTrajectory(ballPrefab,transform.position, steeringAngle, shootState,power);
 
                 bool justStarted = !aiming;
                 aiming = true;
@@ -105,6 +133,7 @@ public class Ball : MonoBehaviour
                     aimingLine.transform.localScale.y,
                     aimLineLength / 10f
                 );
+              //  projection.SimulateTrajectory(transform.position, steeringAngle,1);
 
 
             }

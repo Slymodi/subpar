@@ -10,14 +10,14 @@ public class Projection : MonoBehaviour
     [SerializeField] private LineRenderer _line;
     [SerializeField] private int _maxPhysicsFrameIterations = 100;
     [SerializeField] private Ball _ballPrefab;
-    private List<Transform> _obstaclesParent;
-
+   // private List<Transform> _obstaclesParent;
+    [SerializeField]private Transform _obstaclesParent;
     private Scene _simulationScene;
     private PhysicsScene _physicsScene;
     private readonly Dictionary<Transform, Transform> _spawnedObjects = new Dictionary<Transform, Transform>();
 
     private void Start() {
-        _obstaclesParent = new List<Transform>();
+        //_obstaclesParent = new List<Transform>();
         CreatePhysicsScene();
    }
 
@@ -31,7 +31,7 @@ public class Projection : MonoBehaviour
 
 
         //get every folder with the name generated-meshes and add its contents to ObstaclesParent
-        var generatedMeshes = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "[generated-meshes]");
+     /*   var generatedMeshes = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == "[generated-meshes]");
         foreach (var generatedMesh in generatedMeshes)
         {
             foreach (Transform child in generatedMesh.transform)
@@ -39,7 +39,7 @@ public class Projection : MonoBehaviour
                 
                 _obstaclesParent.Add(child);
             }
-        }
+        }*/
 
 
 
@@ -63,14 +63,15 @@ public class Projection : MonoBehaviour
         }
     }
 
-    public void SimulateTrajectory( Vector3 pos, float steeringAngle, float power) {
+    public void SimulateTrajectory( Transform pos, float steeringAngle, float power) {
 
-        var ghostObj = Instantiate(_ballPrefab, pos, Quaternion.identity);
-        
+        var ghostObj = Instantiate(_ballPrefab, pos);
+        ghostObj.transform.parent = null;
+        DontDestroyOnLoad(ghostObj.gameObject);
         SceneManager.MoveGameObjectToScene(ghostObj.gameObject, _simulationScene);
         ghostObj.steeringAngle = steeringAngle;
         ghostObj.isGhost = true;
-        ghostObj.power = power;
+        ghostObj.power = 1;
         ghostObj.powerMultiplier = 500f;
 
         _line.positionCount = _maxPhysicsFrameIterations;

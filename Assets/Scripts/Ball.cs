@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public class Ball : MonoBehaviour
 {
     [Header("Visual Settings")]
     [SerializeField] private Transform steeringPlaneForward;
     [SerializeField] private Transform steeringPlaneRear;
-    [SerializeField] Transform aimingLine;
+    [SerializeField] Transform aimingLine
+    {
+        get
+        {
+            if (_aimingLine == null) _aimingLine = Resources.FindObjectsOfTypeAll<Transform>().Where(obj => obj.name == "AimingLine").FirstOrDefault();
+            return _aimingLine;
+        }
+    }
+    private Transform _aimingLine;
     [SerializeField] Transform ring;
     [SerializeField] private float minSteeringPlaneScale = 0.5f;
     [SerializeField] private float maxSteeringPlaneScale = 1f;
@@ -15,13 +23,37 @@ public class Ball : MonoBehaviour
     [SerializeField] float arrowCenterOffset = 1f;
     [SerializeField] float aimSpeed = 0.5f;
     [Header("Shoot Settings")]
-    [SerializeField] GameStateController gameStateController;
     [SerializeField] public float powerMultiplier = 500f;
-    [SerializeField] Collider inputRaycastPlane;
+
+    [SerializeField] GameStateController gameStateController
+    {
+        get
+        {
+            if (_gameStateController == null) _gameStateController = FindObjectOfType<GameStateController>();
+            return _gameStateController;
+        }
+    }
+    [SerializeField]private GameStateController _gameStateController;
+    [SerializeField] Collider inputRaycastPlane
+    {
+        get
+        {
+            if (_inputRaycastPlane == null) _inputRaycastPlane = Resources.FindObjectsOfTypeAll<Collider>().Where(obj => obj.name == "InputRaycastPlane").FirstOrDefault();
+            return _inputRaycastPlane;
+        }
+    }
+    [SerializeField]private Collider _inputRaycastPlane;
     [SerializeField] float minAimDistance = 0.05f;
     [SerializeField] float powerSensitivity = 1f;
-    [SerializeField] Projection projection;
-    [SerializeField] Ball ballPrefab;
+     Projection projection 
+    {
+        get
+        {
+            if (_projection == null) _projection = FindObjectOfType<Projection>();
+            return _projection;
+        }
+    }
+    [SerializeField]private Projection _projection;
 
     bool pointerMovedEnough = false;
     Vector3 lastEndTouch = Vector3.zero;
@@ -46,28 +78,34 @@ public class Ball : MonoBehaviour
     private bool showingSteering = true;
     public float steeringAngle = 0;    // relative to -z
     public float power = 0;    // between 0 and 1
-    public bool isGhost = false;
+    [SerializeField]public bool isGhost = true;
     bool moveable = true;
 
     void Start()
     {
+        if (isGhost) return;
         ShowSteering(false);
         shootState = ShootState.DRIVE;
     }
 
     void Update()
     {
+
+
         UpdateSteeringArrows();
+        if(isGhost) return;
 
         ring.gameObject.SetActive(!moveable);
         if (!moveable) ring.transform.localEulerAngles += Vector3.up * ringSpinSpeed * Time.deltaTime;
-
+        
         bool aiming = false;
 
         if (TouchInput.Instance.secondPointerDown) ChangeShootState();
 
         if (TouchInput.Instance.pointerHeld && gameStateController.State == GameStateController.GameState.aiming)
         {
+        projection.SimulateTrajectory(transform, steeringAngle,1);
+
             if (!pointerMovedEnough)
             {
                 float touchChange = (TouchInput.Instance.pointerStartPosition - TouchInput.Instance.pointerPosition).magnitude;
@@ -78,7 +116,6 @@ public class Ball : MonoBehaviour
             }
             else
             {
-                projection.SimulateTrajectory(ballPrefab,transform.position, steeringAngle, shootState,power);
 
                 bool justStarted = !aiming;
                 aiming = true;
@@ -105,6 +142,7 @@ public class Ball : MonoBehaviour
                     aimingLine.transform.localScale.y,
                     aimLineLength / 10f
                 );
+              //  projection.SimulateTrajectory(transform, steeringAngle,1);
 
 
             }
@@ -236,6 +274,7 @@ public class Ball : MonoBehaviour
 
     public void SetMoveable(bool moveable)
     {
+        if (isGhost) return;
         this.moveable = moveable;
         ThisRigidBody.isKinematic = !moveable;
     }

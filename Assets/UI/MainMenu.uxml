@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MenuStyle.uss?fileID=7433441132597879392&amp;guid=7d4734b5d349aa84ab8cafade72b66b6&amp;type=3#MenuStyle" />
+    <ui:VisualElement style="height: 420px; width: 367px; align-items: center; justify-content: space-around;">
+        <ui:Button text="SinglePlayer" display-tooltip-when-elided="true" name="SinglePlayer" class="button" style="height: 69px; width: 186px;" />
+        <ui:Button text="Play with Friends" display-tooltip-when-elided="true" class="button" style="height: 71px; width: 191px;" />
+        <ui:Button text="Online" display-tooltip-when-elided="true" class="button" style="height: 63px; width: 185px;" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SquareCameraScaler : MonoBehaviour
 {
-    float originalSize = 5f;
+    float originalSize = 9f;
     Camera cam;
 
     void Start()

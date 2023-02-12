@@ -60,7 +60,7 @@ public class Projection : MonoBehaviour
     }
 
     private void Update() {
-        if (TouchInput.Instance.pointerDown) {
+        if (TouchInput.Instance.pointerHeld) {
             SimulateTrajectory();
         }
         foreach (var item in _spawnedObjects) {

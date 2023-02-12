@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class Ball : MonoBehaviour
+using Fusion;
+public class Ball : NetworkBehaviour
 {
     [Header("Visual Settings")]
     [SerializeField] private Transform steeringPlaneForward;
@@ -21,9 +22,10 @@ public class Ball : MonoBehaviour
     [SerializeField] private float maxSteeringPlaneScale = 1f;
     [SerializeField] float ringSpinSpeed = 90f;
     [SerializeField] float arrowCenterOffset = 1f;
+     [Header("Shoot Settings")]
     [SerializeField] float aimSpeed = 0.5f;
-    [Header("Shoot Settings")]
-    [SerializeField] public float powerMultiplier = 500f;
+   
+   [Networked][SerializeField] public float powerMultiplier {get; set;}
 
     [SerializeField] GameStateController gameStateController
     {
@@ -76,8 +78,8 @@ public class Ball : MonoBehaviour
     Rigidbody thisRigidBody;
 
     private bool showingSteering = true;
-    public float steeringAngle = 0;    // relative to -z
-    public float power = 0;    // between 0 and 1
+    [Networked]public float steeringAngle {get; set;}   // relative to -z
+    [Networked]public float power {get; set;}    // between 0 and 1
     [SerializeField]public bool isGhost = true;
     bool moveable = true;
 
@@ -86,11 +88,15 @@ public class Ball : MonoBehaviour
         if (isGhost) return;
         ShowSteering(false);
         shootState = ShootState.DRIVE;
-    }
+        //get the gamecontroller and set the ball to this
+        GetComponent<GameController>().ball = this;
+        
+        //get the maincamera and set the follower transform to this
+        GetComponent<SmoothFollow>().target = this.transform;
 
+    }
     void Update()
     {
-
 
         UpdateSteeringArrows();
         if(isGhost) return;
@@ -104,7 +110,7 @@ public class Ball : MonoBehaviour
 
         if (TouchInput.Instance.pointerHeld && gameStateController.State == GameStateController.GameState.aiming)
         {
-        projection.SimulateTrajectory(transform, steeringAngle,1);
+        projection.SimulateTrajectory();
 
             if (!pointerMovedEnough)
             {
@@ -155,13 +161,30 @@ public class Ball : MonoBehaviour
         if (TouchInput.Instance.pointerUp && gameStateController.State == GameStateController.GameState.aiming)
         {
             gameStateController.State = GameStateController.GameState.rolling;
-            Shoot();
+            SignalShoot();
         }
 
         ShowSteering(aiming);
 
     }
 
+    private bool toShoot = false;
+    [Networked] public NetworkButtons ButtonsPrevious { get; set; }
+    public override void FixedUpdateNetwork()
+    {
+        if (isGhost) return;
+        base.FixedUpdateNetwork();
+
+        if (GetInput(out NetworkInputData data))
+		{
+            if ((data.buttons & NetworkInputData.MOUSEBUTTON1) != 0 && toShoot)
+            {           
+                Shoot();
+                toShoot = false;
+            }
+        }
+
+    }
 
     // ============================================================================================
     // Visual Effects 
@@ -249,7 +272,10 @@ public class Ball : MonoBehaviour
     {
         steeringAngle = angle;
     }
-
+    public void SignalShoot()
+    {
+        toShoot = true;
+    }
     public void Shoot()
     {
         ThisRigidBody.AddForce(GetShootDirection() * power * powerMultiplier);

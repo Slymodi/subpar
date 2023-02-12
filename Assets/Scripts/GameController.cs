@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(GameStateController))]
 public class GameController : MonoBehaviour
 {
-    [SerializeField] Ball ball;
+    [SerializeField] public Ball ball;
     [SerializeField] float minBallY = -1f;
     [SerializeField] float maxStillSpeed = 0.1f;
     [SerializeField] float minStillTime = 0.5f;
@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
     }
 
     void FixedUpdate() {
+        if (!ball) return;
         if (ball.transform.position.y < minBallY) Restart();
 
         if (gameStateController.State == GameStateController.GameState.rolling) {
@@ -46,11 +47,11 @@ public class GameController : MonoBehaviour
 
     void OnAimStart() {
         // inputController.enabled = true;
-        ball.SetMoveable(false);
+        ball?.SetMoveable(false);
     }
 
     void OnRollingStart() {
         // inputController.enabled = false;
-        ball.SetMoveable(true);
+        ball?.SetMoveable(true);
     }
 }

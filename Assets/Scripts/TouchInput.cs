@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// Abstraction on simple touch/mouse input
@@ -17,6 +18,19 @@ public class TouchInput: Singleton<TouchInput>
     public bool secondPointerUp;
     public bool secondPointerHeld;
 
+    public Vector3 nStartTouch;
+    public Vector3 nEndTouch;
+
+    [SerializeField] Collider inputRaycastPlane
+    {
+        get
+        {
+            if (_inputRaycastPlane == null) _inputRaycastPlane = Resources.FindObjectsOfTypeAll<Collider>().Where(obj => obj.name == "InputRaycastPlane").FirstOrDefault();
+            return _inputRaycastPlane;
+        }
+    }
+    [SerializeField]private Collider _inputRaycastPlane;
+
     void Update()
     {
         bool lastPointerHeld = pointerHeld;
@@ -32,6 +46,9 @@ public class TouchInput: Singleton<TouchInput>
         if (Input.GetMouseButton(0)) {
             pointerPosition = new Vector2(Input.mousePosition.x / Screen.width, Input.mousePosition.y / Screen.height);
             pointerHeld = true;
+            nEndTouch = GetPlanePosition(pointerPosition).GetValueOrDefault();
+            Vector3 goalEndTouch = nStartTouch + (nEndTouch - nStartTouch).normalized;
+            nEndTouch = Vector3.Lerp(nEndTouch, goalEndTouch, 1);
         }
         if (Input.GetMouseButton(1)) {
             secondPointerHeld = true;
@@ -46,7 +63,21 @@ public class TouchInput: Singleton<TouchInput>
         secondPointerUp = lastSecondPointerHeld && !secondPointerHeld;
 
 
-        if (pointerDown) pointerStartPosition = pointerPosition;
+        if (pointerDown) {
+            pointerStartPosition = pointerPosition;
+            nStartTouch = GetPlanePosition(pointerPosition).GetValueOrDefault();
+        }
+    }
+
+    Vector3? GetPlanePosition(Vector2 screenPosition)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(screenPosition.x * Screen.width, screenPosition.y * Screen.height));
+        RaycastHit hit;
+        if (inputRaycastPlane.Raycast(ray, out hit, 100.0f))
+        {
+            return hit.point;
+        }
+        return null;
         
     }
 }

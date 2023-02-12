@@ -309,13 +309,13 @@ MonoBehaviour:
   Version: 1
   SharedMesh: {fileID: 3019129610848903582}
   RenderMaterial: {fileID: 0}
-  PhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  PhysicsMaterial: {fileID: 13400000, guid: be10a17d37295e144944a6e5ea5dfe03, type: 2}
   RenderSurfaceType: 4
   MeshDescription:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 23714
+    surfaceParameter: 26466
     meshQueryIndex: 2
     subMeshQueryIndex: 0
     geometryHashValue: 1193744322890782137
@@ -332,7 +332,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2576417370928983423}
-  m_Material: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  m_Material: {fileID: 13400000, guid: be10a17d37295e144944a6e5ea5dfe03, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -4404,7 +4404,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 23734
+    surfaceParameter: 26658
     meshQueryIndex: 0
     subMeshQueryIndex: 0
     geometryHashValue: 1308975140587594103
@@ -4512,13 +4512,13 @@ MonoBehaviour:
   Version: 1
   SharedMesh: {fileID: 8157645183251876215}
   RenderMaterial: {fileID: 0}
-  PhysicsMaterial: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  PhysicsMaterial: {fileID: 13400000, guid: be10a17d37295e144944a6e5ea5dfe03, type: 2}
   RenderSurfaceType: 4
   MeshDescription:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 23714
+    surfaceParameter: 26466
     meshQueryIndex: 2
     subMeshQueryIndex: 0
     geometryHashValue: 1193744322890782137
@@ -4535,7 +4535,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6781567057353949569}
-  m_Material: {fileID: 13400000, guid: 0c5fdfb44d6f19646a41a0720fbf751a, type: 2}
+  m_Material: {fileID: 13400000, guid: be10a17d37295e144944a6e5ea5dfe03, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -4802,7 +4802,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 23732
+    surfaceParameter: 26660
     meshQueryIndex: 1
     subMeshQueryIndex: 0
     geometryHashValue: -3413787731773155932

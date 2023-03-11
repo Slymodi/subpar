@@ -56,20 +56,21 @@ private NetworkRunner _runner;
 
 
   private void CollectMouseInput() {
-    Vector3? nStartTouch = GetPlanePosition(TouchInput.Instance.pointerStartPosition);
-    Vector3? nEndTouch = GetPlanePosition(TouchInput.Instance.pointerPosition);
-    if (nStartTouch == null || nEndTouch == null) return;
-    Vector3 startTouch = (Vector3)nStartTouch;
-    Vector3 rawEndTouch = (Vector3)nEndTouch;
-    var power = Mathf.Clamp((startTouch - rawEndTouch).magnitude * powerSensitivity, 0, 1);
-    Vector3 goalEndTouch = startTouch + (rawEndTouch - startTouch).normalized * power;
-    Vector3 endTouch = Vector3.Lerp(lastEndTouch, goalEndTouch, justStarted? 1: Mathf.Min(1, Time.deltaTime * aimSpeed));
-    lastEndTouch = endTouch;
-    float aimAngle = Vector3.SignedAngle(Vector3.forward, (endTouch - startTouch), Vector3.up);
-    power = Mathf.Clamp((startTouch - endTouch).magnitude, 0, 1);
-    
     if (TouchInput.Instance.pointerUp)
     {
+      Vector3? nStartTouch = GetPlanePosition(TouchInput.Instance.pointerStartPosition);
+      Vector3? nEndTouch = GetPlanePosition(TouchInput.Instance.pointerPosition);
+      if (nStartTouch == null || nEndTouch == null) return;
+      Vector3 startTouch = (Vector3)nStartTouch;
+      Vector3 rawEndTouch = (Vector3)nEndTouch;
+      var power = Mathf.Clamp((startTouch - rawEndTouch).magnitude * powerSensitivity, 0, 1);
+      Vector3 goalEndTouch = startTouch + (rawEndTouch - startTouch).normalized * power;
+      Vector3 endTouch = Vector3.Lerp(lastEndTouch, goalEndTouch, justStarted? 1: Mathf.Min(1, Time.deltaTime * aimSpeed));
+      lastEndTouch = endTouch;
+      float aimAngle = Vector3.SignedAngle(Vector3.forward, (endTouch - startTouch), Vector3.up);
+      power = Mathf.Clamp((startTouch - endTouch).magnitude, 0, 1);
+      
+
         SignalShoot(power, aimAngle);
     }
   }
@@ -123,7 +124,7 @@ private NetworkRunner _runner;
                 runner.SetPlayerObject(player, networkPlayerObject);
 
 			}
-      if (runner.LocalPlayer == player)
+      if (runner.IsClient)
      {
         var playerInputConsumer = runner.GetPlayerObject(player).GetComponent<PlayerInputConsumer>();
         _arrowHandler.steeringPlaneForward = playerInputConsumer.steeringPlaneForward;

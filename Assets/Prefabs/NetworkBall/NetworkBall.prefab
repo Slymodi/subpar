@@ -193,7 +193,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1404819311908484989}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e10f73740359074aa6e07d5e3cbc1cc, type: 3}
   m_Name: 
@@ -256,7 +256,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 719d82370fd189941b32546030a08135, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -426,7 +426,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3824139831924995132}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e10f73740359074aa6e07d5e3cbc1cc, type: 3}
   m_Name: 
@@ -530,14 +530,14 @@ GameObject:
   m_Component:
   - component: {fileID: 6995325566103362343}
   - component: {fileID: 6995325566103362522}
-  - component: {fileID: 2179848299375943940}
-  - component: {fileID: 3336077296395431936}
   - component: {fileID: 16733643746412340}
   - component: {fileID: 4674249085938026519}
   - component: {fileID: 8023668908091208939}
+  - component: {fileID: 6923642463511659405}
+  - component: {fileID: 3391385020507879800}
   m_Layer: 9
   m_Name: NetworkBall
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -584,46 +584,9 @@ MonoBehaviour:
     RawGuidValue: 4d76a3eea7df6ae419e53b4400938c5b
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 2179848299375943940}
   - {fileID: 4674249085938026519}
+  - {fileID: 6923642463511659405}
   SimulationBehaviours: []
---- !u!114 &2179848299375943940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6995325566103362523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d4516908f111d48aaaa3e6f02438a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolationDataSource: 0
-  ThisRigidBody: {fileID: 16733643746412340}
-  constantDeceleration: 1
-  proportionalDeceleration: 1
-  power: 0
-  steeringAngle: 0
-  steeringPlaneForward: {fileID: 4821573349970942276}
-  steeringPlaneRear: {fileID: 7747136840345130725}
---- !u!114 &3336077296395431936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6995325566103362523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc71248f57cf7a7449aed2b560785798, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _line: {fileID: 5230806046200391991}
-  _maxPhysicsFrameIterations: 100
-  _ballPrefab: {fileID: 4738251749711824060, guid: 3670a2fe83c5818438bfa6e5a9293834, type: 3}
-  _obstaclesParent: {fileID: 0}
-  angle: 0
 --- !u!54 &16733643746412340
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -675,9 +638,48 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6995325566103362523}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: fdec2f3b92f60bb4f8e227d32760c404, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6923642463511659405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6995325566103362523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95d4516908f111d48aaaa3e6f02438a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 2
+  ThisRigidBody: {fileID: 16733643746412340}
+  constantDeceleration: 1
+  proportionalDeceleration: 1
+  power: 0
+  steeringAngle: 0
+  steeringPlaneForward: {fileID: 4821573349970942276}
+  steeringPlaneRear: {fileID: 7747136840345130725}
+  projection: {fileID: 3391385020507879800}
+  hitParticle: {fileID: 491155846148844981, guid: 527244942827a5049ba6136979bac82b, type: 3}
+--- !u!114 &3391385020507879800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6995325566103362523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc71248f57cf7a7449aed2b560785798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _line: {fileID: 5230806046200391991}
+  _maxPhysicsFrameIterations: 100
+  _ballPrefab: {fileID: 4738251749711824060, guid: 3670a2fe83c5818438bfa6e5a9293834, type: 3}
+  _obstaclesParent: {fileID: 0}
+  angle: 0

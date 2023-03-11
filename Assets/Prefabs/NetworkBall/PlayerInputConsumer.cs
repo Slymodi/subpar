@@ -18,14 +18,20 @@ public class PlayerInputConsumer : NetworkBehaviour
 
     [SerializeField] public Transform steeringPlaneForward;
     [SerializeField] public Transform steeringPlaneRear;
+
+    [SerializeField]Projection projection;
+
+    [SerializeField] private GameObject hitParticle;
     
 public override void FixedUpdateNetwork() {
 
-
+  
     if (GetInput<NetworkInputData>(out var input) == false) return;
 
     // BALL FRICTION
-        float maxDeceleration = constantDeceleration + proportionalDeceleration * ThisRigidBody.velocity.magnitude;        
+        float maxDeceleration = constantDeceleration 
+            + proportionalDeceleration 
+            * ThisRigidBody.velocity.magnitude;        
         float deceleration = Mathf.Max(maxDeceleration, ThisRigidBody.velocity.magnitude);
         //ThisRigidBody.velocity -= deceleration * ThisRigidBody.velocity.normalized * Runner.DeltaTime;
     // compute pressed/released state
@@ -39,12 +45,14 @@ public override void FixedUpdateNetwork() {
     //if (input.Buttons.IsSet(MyButtons.Forward)) { vector.z += 1; }
 
 
-    DoMove(input.direction);
+    //DoMove(input.direction);
 
     // jump (check for pressed)
-    if (pressed.IsSet(MyButtons.Shoot)) {
+    if (pressed.IsSet(MyButtons.Shoot)  && input.power > 0.1f) {
       DoJump(input.power, input.angle);
     }
+
+    
   }
 
   void DoMove(Vector3 vector) {
@@ -52,7 +60,10 @@ public override void FixedUpdateNetwork() {
   }
 
   void DoJump(float power, float angle) {
-    ThisRigidBody.AddForce( Quaternion.AngleAxis( angle + 90, Vector3.up)  *new Vector3(1, 1, 0) * power * 500);
+    ThisRigidBody.AddForce( Quaternion.AngleAxis( angle + 90, Vector3.up)
+      * new Vector3(1, 1, 0) * power * 500);
+
+      ParticleSpawner.Instance.SpawnHitParticle(hitParticle, transform.position, Quaternion.identity);
   }
 
 

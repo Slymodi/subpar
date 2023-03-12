@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Fusion104/Scene104.unity
     guid: f1ccfce7e875944dba17486328777a5d
+  - enabled: 1
+    path: Assets/Levels/Lobby/GameLobby.unity
+    guid: cc4cc5da8ea83e74ba7fb90cdfd7c6dc
+  - enabled: 1
+    path: Assets/Levels/Lobby/LobbyFlat.unity
+    guid: cb5e8bdf659676b4ab3831e78af6e099
   m_configObjects: {}

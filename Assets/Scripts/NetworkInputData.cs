@@ -1,7 +1,8 @@
 using Fusion;
 using UnityEngine;
 enum MyButtons {
-    Shoot = 0
+    Shoot = 0,
+	Projection = 1,
 }
 
 public struct NetworkInputData : INetworkInput

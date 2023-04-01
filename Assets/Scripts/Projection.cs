@@ -16,7 +16,7 @@ public class Projection : MonoBehaviour
     private PhysicsScene _physicsScene;
     private readonly Dictionary<Transform, Transform> _spawnedObjects = new Dictionary<Transform, Transform>();
     [SerializeField] private float angle;
-    private void Start() {
+    private void Awake() {
         //_obstaclesParent = new List<Transform>();
 
         //assign the obstacles parent to the PhysicsInteractable object in the scene
@@ -26,7 +26,14 @@ public class Projection : MonoBehaviour
 
 
     private void CreatePhysicsScene() {
-        _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
+        var simulationSceneMaybe = SceneManager.GetSceneByName("Simulation");
+        if (simulationSceneMaybe.IsValid()) {
+            _simulationScene = simulationSceneMaybe;
+            _physicsScene = _simulationScene.GetPhysicsScene();
+            return;
+        } else {
+            _simulationScene = SceneManager.CreateScene("Simulation", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
+        }
         _physicsScene = _simulationScene.GetPhysicsScene();
 
 
@@ -50,7 +57,12 @@ public class Projection : MonoBehaviour
             var ghostObj = Instantiate(obj.gameObject, obj.position, obj.rotation);
             //disable the renderer of the ghost object but the ghost object may not have a renderer
             try {
-                ghostObj.GetComponent<Renderer>().enabled = false;
+                ghostObj.layer = 2;
+                var children = ghostObj.GetComponentsInChildren<Transform>(includeInactive: true);
+                foreach (var child in children)
+                {
+                    child.gameObject.layer = 2;
+                }
             } catch {
                 //this is so that the script doesn't crash if the object doesn't have a renderer
             }
@@ -59,23 +71,10 @@ public class Projection : MonoBehaviour
         }
     }
 
-    private void Update() {
-        if (TouchInput.Instance.pointerHeld) {
-            SimulateTrajectory();
-        }
-        foreach (var item in _spawnedObjects) {
-            item.Value.position = item.Key.position;
-            item.Value.rotation = item.Key.rotation;
-        }
-    }
-
-    public void SimulateTrajectory() {
+    public void SimulateTrajectory(float power, float angle) {
         if(_line == null) return;
         //set the steering angle to the transform of the angle of the touch input first and second position
 
-        
-        float steeringAngle = Vector3.SignedAngle(Vector3.forward, (TouchInput.Instance.nEndTouch - TouchInput.Instance.nStartTouch), Vector3.up);
-        angle = steeringAngle;
         var ghostObj = Instantiate(_ballPrefab, this.transform);
         ghostObj.transform.parent = null;
         DontDestroyOnLoad(ghostObj.gameObject);
@@ -85,7 +84,7 @@ public class Projection : MonoBehaviour
         _line.positionCount = _maxPhysicsFrameIterations;
     // ghostOzbj.Shoot();   
         //.AddForce( direction * power, ForceMode.Impulse);
-        ghostObj.GetComponent<Rigidbody>().AddForce( Quaternion.AngleAxis( steeringAngle + 90, Vector3.up)  * new Vector3(1, 1, 0) * 1.0f * 500f);
+        ghostObj.GetComponent<Rigidbody>().AddForce( Quaternion.AngleAxis( angle + 90, Vector3.up)  * new Vector3(1, 1, 0) * power * 500f);
 
         for (var i = 0; i < _maxPhysicsFrameIterations; i++) {
             _physicsScene.Simulate(Time.fixedDeltaTime);

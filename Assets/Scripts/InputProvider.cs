@@ -56,7 +56,8 @@ private NetworkRunner _runner;
 
 
   private void CollectMouseInput() {
-    if (TouchInput.Instance.pointerUp)
+
+    if (TouchInput.Instance.pointerUp || TouchInput.Instance.pointerHeld)
     {
       Vector3? nStartTouch = GetPlanePosition(TouchInput.Instance.pointerStartPosition);
       Vector3? nEndTouch = GetPlanePosition(TouchInput.Instance.pointerPosition);
@@ -70,9 +71,19 @@ private NetworkRunner _runner;
       float aimAngle = Vector3.SignedAngle(Vector3.forward, (endTouch - startTouch), Vector3.up);
       power = Mathf.Clamp((startTouch - endTouch).magnitude, 0, 1);
       
+      if(TouchInput.Instance.pointerUp)
+          SignalShoot(power, aimAngle);
+      else if(TouchInput.Instance.pointerHeld)
+          SignalProjection(power, aimAngle);
 
-        SignalShoot(power, aimAngle);
     }
+  }
+
+  private void SignalProjection(float power, float angle)
+  {
+    localNetworkInput.NetworkButtons.Set(MyButtons.Projection, true);
+    localNetworkInput.power = power;
+    localNetworkInput.angle = angle;
   }
 
   private void SignalShoot(float power, float angle)
@@ -109,7 +120,7 @@ private NetworkRunner _runner;
 		}
 
 		[SerializeField] private NetworkPrefabRef _playerPrefab; // Character to spawn for a joining player
-		private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
+		[SerializeField]private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
 [SerializeField] private ArrowHandler _arrowHandler;
 		public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
@@ -120,6 +131,10 @@ private NetworkRunner _runner;
 				NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
                 var playerInputConsumer = networkPlayerObject.GetComponent<PlayerInputConsumer>();
                 playerInputConsumer.playerRef = player;
+                playerInputConsumer.color = new Color(
+                  UnityEngine.Random.value,
+                  UnityEngine.Random.value,
+                  UnityEngine.Random.value);
 				_spawnedCharacters.Add(player, networkPlayerObject);
                 runner.SetPlayerObject(player, networkPlayerObject);
 

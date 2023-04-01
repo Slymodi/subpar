@@ -110,7 +110,7 @@ public class Ball : NetworkBehaviour
 
         if (TouchInput.Instance.pointerHeld && gameStateController.State == GameStateController.GameState.aiming)
         {
-        projection.SimulateTrajectory();
+       // projection.SimulateTrajectory();
 
             if (!pointerMovedEnough)
             {

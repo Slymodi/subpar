@@ -15,9 +15,9 @@ TagManager:
   - Ground
   - Second Render Pass
   - Ball
-  - Pixel
-  - 
-  - 
+  - Entity
+  - FX
+  - SwapBlock
   - 
   - 
   - 

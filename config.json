@@ -1,0 +1,30 @@
+{
+    "application": {
+      "id":  1086352813220696094,
+      "manifests": [
+    {
+        "label": "DCC/windows",
+        "platforms": ["win32", "win64"],
+        "locales": [],
+        "local_root": "Build",
+        "file_rules": {
+            "mappings": [
+              {
+                "local_path": "",     
+                "install_path": ""
+              }
+            ]
+        },
+        "launch_options": [
+            {
+            "name": "DCC",
+            "executable": "DCC.exe",
+            "arguments": [],
+            "platforms": ["win32", "win64"],
+            "working_dir": ""
+            }
+        ]
+    }
+]
+}
+}

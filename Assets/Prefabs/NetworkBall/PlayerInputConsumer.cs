@@ -22,7 +22,14 @@ public class PlayerInputConsumer : NetworkBehaviour
     [SerializeField]Projection projection;
 
     [SerializeField] private GameObject hitParticle;
-    
+
+    [Networked] public Color color { get; set; }
+
+
+void Spawned(){
+  projection = GetComponentInChildren<Projection>();
+
+}
 public override void FixedUpdateNetwork() {
 
   
@@ -44,6 +51,9 @@ public override void FixedUpdateNetwork() {
 
     //if (input.Buttons.IsSet(MyButtons.Forward)) { vector.z += 1; }
 
+    if(input.NetworkButtons.IsSet(MyButtons.Projection)) {
+      projection.SimulateTrajectory(input.power, input.angle);
+    }
 
     //DoMove(input.direction);
 

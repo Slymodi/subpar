@@ -1,0 +1,13 @@
+{
+  "prompt_text": "black and white checkered tile",
+  "seamless_patch_scale": 0.8,
+  "upscale_resolution": 512,
+  "is_seamless": true,
+  "pbr_mode": "organic",
+  "pbr_generate_color": true,
+  "pbr_generate_normal": true,
+  "pbr_generate_height": true,
+  "pbr_generate_ao": false,
+  "pbr_generate_roughness": false,
+  "pbr_generate_metallic": false
+}

@@ -122,7 +122,7 @@ private NetworkRunner _runner;
 		[SerializeField] private NetworkPrefabRef _playerPrefab; // Character to spawn for a joining player
 		[SerializeField]private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
 
-[SerializeField] private ArrowHandler _arrowHandler;
+//[SerializeField] private ArrowHandler _arrowHandler;
 		public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 		{
 			if (runner.IsServer)
@@ -142,8 +142,8 @@ private NetworkRunner _runner;
       if (runner.IsClient)
      {
         var playerInputConsumer = runner.GetPlayerObject(player).GetComponent<PlayerInputConsumer>();
-        _arrowHandler.steeringPlaneForward = playerInputConsumer.steeringPlaneForward;
-        _arrowHandler.steeringPlaneRear = playerInputConsumer.steeringPlaneRear;
+ //       _arrowHandler.steeringPlaneForward = playerInputConsumer.steeringPlaneForward;
+    //    _arrowHandler.steeringPlaneRear = playerInputConsumer.steeringPlaneRear;
       }
 		}
 
